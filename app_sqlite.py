@@ -10,5 +10,65 @@ O que o script deve fazer:
 5) Buscar por id
 6) Atualizar registros
 7) Deletar registros
-
+0
 """
+import sqlite3
+# Passo 1 - Conectar/criar o banco de dados
+conn = sqlite3.connect("escola.db")
+cursor = conn.cursor()
+
+# Passo 2 - Criar tabela
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS alunos(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nome TEXT NOT NULL,
+    idade INTEGER,
+    email TEXT
+               )
+""")
+
+print("Tabela criada com sucesso!\n")
+
+# Passo 3 - Inserir dados
+cursor.execute("INSERT INTO alunos(nome, idade, email) VALUES(?,?,?)",
+               ("José",18, "jose@gmail.com"))
+cursor.execute("INSERT INTO alunos(nome, idade, email) VALUES(?,?,?)",
+               ("Carlos",17, "carlos@gmail.com"))
+cursor.execute("INSERT INTO alunos(nome, idade, email) VALUES(?,?,?)",
+               ("Pedro",15, "pedrao@gmail.com"))
+cursor.execute("INSERT INTO alunos(nome, idade, email) VALUES(?,?,?)",
+               ("Camila",42, "camila@gmail.com"))
+conn.commit()
+
+print("Dados inseridos!\n")
+
+# Passo 4 - Listar todos
+cursor.execute("SELECT * FROM alunos")
+for linha in cursor.fetchall():
+    print(linha)
+print()
+
+# Passo 5 - Atualizar um registro
+cursor.execute("UPDATE alunos SET email = ? WHERE nome = ?",
+               ("jose.dev@gmail.com", "josé"))
+conn.commit()
+
+print("Após atualização do email do José:")
+
+cursor.execute("SELECT * FROM alunos")
+for linha in cursor.fetchall():
+    print(linha)
+print()
+
+# Passo 6 = Deletar um registro
+cursor.execute("DELETE FROM alunos WHERE nome =?", ("Gustavo",))
+conn.commit()
+
+print("Após deletar do email do Gustavo")
+cursor.execute("SELECT * FROM alunos")
+for linha in cursor.fetchall():
+    print(linha)
+print()
+
+# Encerrar conexão
+conn.close()
